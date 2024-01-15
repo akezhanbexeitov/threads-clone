@@ -1,7 +1,12 @@
+import { ClerkProvider } from "@clerk/nextjs";
+import { Inter } from "next/font/google";
+
 export const metadata = {
   title: "Threads Clone",
   description: "Threads Clone created by Akezhan Bexeitov",
 };
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -9,8 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${inter.className} bg-dark-1`}>{children}</body>
+      </html>
+    </ClerkProvider>
   );
 }
