@@ -7,6 +7,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -134,6 +135,7 @@ const AccountProfile: FC<IProps> = ({ user, btnTitle }) => {
                     onChange={(e) => handleImage(e, field.onChange)}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             );
           }}
@@ -150,6 +152,7 @@ const AccountProfile: FC<IProps> = ({ user, btnTitle }) => {
               <FormControl>
                 <Input type="text" className="account-form_input" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -165,6 +168,7 @@ const AccountProfile: FC<IProps> = ({ user, btnTitle }) => {
               <FormControl>
                 <Input type="text" className="account-form_input" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -180,6 +184,7 @@ const AccountProfile: FC<IProps> = ({ user, btnTitle }) => {
               <FormControl>
                 <Textarea rows={10} className="account-form_input" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
