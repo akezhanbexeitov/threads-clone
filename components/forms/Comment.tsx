@@ -27,7 +27,6 @@ interface IProps {
 
 const Comment: FC<IProps> = ({ threadId, currentUserImage, currentUserId }) => {
   const pathname = usePathname();
-  //   const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(CommentValidation),
@@ -64,15 +63,17 @@ const Comment: FC<IProps> = ({ threadId, currentUserImage, currentUserId }) => {
                   className="rounded-full object-cover"
                 />
               </FormLabel>
-              <FormControl className="border-none bg-transparent">
-                <Input
-                  type="text"
-                  placeholder="Comment..."
-                  className="no-focus text-light-1 outline-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
+              <div className="flex w-full flex-col">
+                <FormControl className="border-none bg-transparent">
+                  <Input
+                    type="text"
+                    placeholder="Comment..."
+                    className="no-focus text-light-1 outline-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="px-3 py-2" />
+              </div>
             </FormItem>
           )}
         />
