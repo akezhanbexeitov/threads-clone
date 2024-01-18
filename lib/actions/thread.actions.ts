@@ -5,7 +5,7 @@ import Thread from "../models/thread.model"
 import User from "../models/user.model"
 import { connectToDB } from "../mongoose"
 
-interface IParams {
+interface ICreateThreadParams {
     text: string
     author: string
     communityId: string | null
@@ -17,7 +17,7 @@ export const createThread = async ({
     author,
     communityId,
     path
-}: IParams) => {
+}: ICreateThreadParams) => {
     try {
         connectToDB()
 
@@ -105,5 +105,50 @@ export const fetchThreadById = async (id: string) => {
         return thread
     } catch (error: any) {
         throw new Error(`Error fetching thread: ${error.message}`)
+    }
+}
+
+interface IAddCommentToThreadParams { 
+    threadId: string
+    commentText: string
+    userId: string
+    path: string
+}
+
+export const addCommentToThread = async ({
+    threadId,
+    commentText,
+    userId,
+    path
+}: IAddCommentToThreadParams) => {
+    await connectToDB()
+
+    try {
+        // Find the original thread by ID
+        const originalThread = await Thread.findById(threadId)
+ 
+        if (!originalThread) {
+            throw new Error('Thread not found')
+        }
+
+        // Create a new thread with the comment text
+        const commentThread = new Thread({
+            text: commentText,
+            author: userId,
+            parentId: threadId,
+        })
+
+        // Save the new thread
+        const savedCommentThread = await commentThread.save()
+
+        // Add the new thread to the original thread's children
+        originalThread.children.push(savedCommentThread._id)
+
+        // Save the original thread
+        await originalThread.save()
+
+        revalidatePath(path)
+    } catch (error: any) {
+        throw new Error(`Error adding comment to thread: ${error.message}`)
     }
 }
