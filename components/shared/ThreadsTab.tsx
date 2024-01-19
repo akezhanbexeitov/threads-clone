@@ -17,8 +17,6 @@ const ThreadsTab: FC<IProps> = async ({
   const threads = await fetchUserThreads(accountId);
   if (!threads) redirect("/");
 
-  console.log(threads.threads);
-
   return (
     <section className="mt-9 flex flex-col gap-10">
       {threads.threads.map((thread: any) => (
