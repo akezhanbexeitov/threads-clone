@@ -38,9 +38,9 @@ export const createThread = async ({
 }
 
 export const fetchThreads = async (pageNumber = 1, pageSize = 20) => {
-    await connectToDB()
-
     try {
+        await connectToDB()
+
         // Calculate the number of threads to skip
         const skipAmount = (pageNumber - 1) * pageSize
 
@@ -48,12 +48,12 @@ export const fetchThreads = async (pageNumber = 1, pageSize = 20) => {
             .sort({ createdAt: -1 })
             .skip(skipAmount)
             .limit(pageSize)
-            .populate({ path: 'author', model: 'User' })
+            .populate({ path: 'author', model: User })
             .populate({
                 path: 'children',
                 populate: {
                     path: 'author',
-                    model: 'User',
+                    model: User,
                     select: '_id name parentId image'
                 }
             })
@@ -71,14 +71,14 @@ export const fetchThreads = async (pageNumber = 1, pageSize = 20) => {
 }
 
 export const fetchThreadById = async (id: string) => {
-    await connectToDB()
-
     try {
+        await connectToDB()
+
         // TODO populate community
         const threadQuery = Thread.findById(id)
             .populate({
                 path: 'author',
-                model: 'User',
+                model: User,
                 select: '_id id name image'
             })
             .populate({
@@ -86,15 +86,15 @@ export const fetchThreadById = async (id: string) => {
                 populate: [
                     {
                         path: 'author',
-                        model: 'User',
+                        model: User,
                         select: '_id id name parentId image'
                     },
                     {
                         path: 'children',
-                        model: 'Thread',
+                        model: Thread,
                         populate: {
                             path: 'author',
-                            model: 'User',
+                            model: User,
                             select: '_id id name parentId image'
                         }
                     }
@@ -121,9 +121,9 @@ export const addCommentToThread = async ({
     userId,
     path
 }: IAddCommentToThreadParams) => {
-    await connectToDB()
-
     try {
+        await connectToDB()
+        
         // Find the original thread by ID
         const originalThread = await Thread.findById(threadId)
  
