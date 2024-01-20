@@ -44,9 +44,7 @@ export default async function Page() {
             ))}
           </>
         ) : (
-          <p className="!text-base-regular text-light-3">
-            No notifications yet
-          </p>
+          <p className="no-result">No notifications yet</p>
         )}
       </section>
     </section>

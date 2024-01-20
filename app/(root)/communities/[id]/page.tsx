@@ -20,6 +20,7 @@ export default async function Page({ params }: IProps) {
   if (!user) return null;
 
   const communityDetails = await fetchCommunityDetails(params.id);
+  console.log(communityDetails);
 
   return (
     <section>
