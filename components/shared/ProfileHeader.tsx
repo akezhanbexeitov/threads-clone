@@ -8,6 +8,7 @@ interface IProps {
   username: string;
   imgUrl: string;
   bio: string;
+  type?: "User" | "Community";
 }
 
 const ProfileHeader: FC<IProps> = ({
@@ -17,6 +18,7 @@ const ProfileHeader: FC<IProps> = ({
   username,
   imgUrl,
   bio,
+  type,
 }) => {
   return (
     <div className="flex w-full flex-col justify-start">

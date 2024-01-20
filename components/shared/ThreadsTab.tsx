@@ -2,6 +2,7 @@ import { fetchUserThreads } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 import { FC } from "react";
 import ThreadCard from "../cards/ThreadCard";
+import { fetchCommunityThreads } from "@/lib/actions/community.actions";
 
 interface IProps {
   currentUserId: string;
@@ -14,7 +15,14 @@ const ThreadsTab: FC<IProps> = async ({
   accountId,
   accountType,
 }) => {
-  const threads = await fetchUserThreads(accountId);
+  let threads: any;
+
+  if (accountType === "Community") {
+    threads = await fetchCommunityThreads(accountId);
+  } else {
+    threads = await fetchUserThreads(accountId);
+  }
+
   if (!threads) redirect("/");
 
   return (
