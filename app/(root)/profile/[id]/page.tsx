@@ -55,19 +55,23 @@ export default async function Page({ params }: IProps) {
             ))}
           </TabsList>
 
-          {profileTabs.map((tab) => (
-            <TabsContent
-              key={`content-${tab.label}`}
-              value={tab.value}
-              className="w-full text-light-1"
-            >
-              <ThreadsTab
-                currentUserId={user.id}
-                accountId={userInfo.id}
-                accountType="User"
-              />
-            </TabsContent>
-          ))}
+          <TabsContent value="threads" className="w-full text-light-1">
+            <ThreadsTab
+              currentUserId={user.id}
+              accountId={userInfo.id}
+              accountType="User"
+            />
+          </TabsContent>
+
+          {/* TODO Add replies functionality */}
+          <TabsContent value="replies" className="mt-9 w-full text-light-1">
+            <p className="no-result">No replies yet</p>
+          </TabsContent>
+
+          {/* TODO Add tagged functionality */}
+          <TabsContent value="tagged" className="mt-9 w-full text-light-1">
+            <p className="no-result">Not tagged yet</p>
+          </TabsContent>
         </Tabs>
       </div>
     </section>
