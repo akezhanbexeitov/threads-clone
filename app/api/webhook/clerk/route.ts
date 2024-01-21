@@ -3,8 +3,8 @@
 
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
-import { OrganizationJSON, WebhookEvent } from '@clerk/nextjs/server'
-import { createCommunity, updateCommunityInfo } from '@/lib/actions/community.actions';
+import { OrganizationInvitationJSON, OrganizationJSON, WebhookEvent } from '@clerk/nextjs/server'
+import { addMemberToCommunity, createCommunity, updateCommunityInfo } from '@/lib/actions/community.actions';
 import { NextResponse } from 'next/server';
 
 type EventType =
@@ -13,17 +13,19 @@ type EventType =
   | "organizationMembership.created"
   | "organizationMembership.deleted"
   | "organization.updated"
-  | "organization.deleted";
+  | "organization.deleted"
+  | "organizationInvitation.accepted"
 
 const eventTypes: Record<string, EventType> = {
   organizationCreated: "organization.created",
   organizationUpdated: "organization.updated",
   organizationDeleted: "organization.deleted",
   organizationInvitationCreated: "organizationInvitation.created",
+  organizationInvitationAccepted: "organizationInvitation.accepted",
   organizationMembershipCreated: "organizationMembership.created",
   organizationMembershipDeleted: "organizationMembership.deleted",
 }
- 
+
 export async function POST(req: Request) {
  
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -116,6 +118,42 @@ export async function POST(req: Request) {
           { status: 500 }
         );
       }
+
+    case eventTypes.organizationInvitationCreated:
+      try {
+        return NextResponse.json(
+          { message: "Invitation created" },
+          { status: 201 }
+        );
+      } catch (err) {
+        console.log(err);
+
+        return NextResponse.json(
+          { message: "Internal Server Error" },
+          { status: 500 }
+        );
+      }
+
+    case eventTypes.organizationInvitationAccepted:
+      try {
+        const { organization_id, public_metadata } = eventData as OrganizationInvitationJSON
+
+        // @ts-ignore
+        await addMemberToCommunity(organization_id, public_metadata.id);
+
+        return NextResponse.json(
+          { message: "Invitation accepted" },
+          { status: 201 }
+        );
+      } catch (err) {
+        console.log(err);
+
+        return NextResponse.json(
+          { message: "Internal Server Error" },
+          { status: 500 }
+        );
+      }
+
   }
  
   return new Response('', { status: 200 })

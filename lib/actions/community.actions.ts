@@ -200,10 +200,8 @@ export async function addMemberToCommunity(
     await user.save();
 
     return community;
-  } catch (error) {
-    // Handle any errors
-    console.error("Error adding member to community:", error);
-    throw error;
+  } catch (error: any) {
+    throw new Error(`Error adding member to community: ${error.message}`)
   }
 }
 
