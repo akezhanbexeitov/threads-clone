@@ -7,7 +7,7 @@ import Thread from "../models/thread.model";
 import User from "../models/user.model";
 import { connectToDB } from "../mongoose";
 
-interface IParams {
+interface ICreateCommunityParams {
   id: string;
   name: string;
   username: string | null;
@@ -23,7 +23,7 @@ export async function createCommunity({
   image,
   bio,
   createdById,
-}: IParams) {
+} : ICreateCommunityParams) {
   try {
     connectToDB();
 
@@ -248,12 +248,19 @@ export async function removeUserFromCommunity(
   }
 }
 
-export async function updateCommunityInfo(
-  communityId: string,
-  name: string,
-  username: string,
-  image: string
-) {
+interface IUpdateCommunityInfoParams { 
+  communityId: string;
+  name: string;
+  username: string | null;
+  image: string | null;
+}
+
+export async function updateCommunityInfo({
+  communityId,
+  name,
+  username,
+  image
+} : IUpdateCommunityInfoParams) {
   try {
     connectToDB();
 
@@ -268,10 +275,8 @@ export async function updateCommunityInfo(
     }
 
     return updatedCommunity;
-  } catch (error) {
-    // Handle any errors
-    console.error("Error updating community information:", error);
-    throw error;
+  } catch (error: any) {
+    throw new Error(`Error updating community info: ${error.message}`)
   }
 }
 

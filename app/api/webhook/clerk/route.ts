@@ -1,7 +1,10 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-case-declarations */
+
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { OrganizationJSON, WebhookEvent } from '@clerk/nextjs/server'
-import { createCommunity } from '@/lib/actions/community.actions';
+import { createCommunity, updateCommunityInfo } from '@/lib/actions/community.actions';
 import { NextResponse } from 'next/server';
 
 type EventType =
@@ -72,24 +75,42 @@ export async function POST(req: Request) {
  
   switch (eventType) {
     case eventTypes.organizationCreated:
-      // eslint-disable-next-line no-case-declarations, camelcase
-      const { id, name, slug, logo_url, image_url, created_by } = eventData as OrganizationJSON
-
       try {
+        const { id, name, slug, logo_url, image_url, created_by } = eventData as OrganizationJSON
+
         await createCommunity({
           id,
           name,
           username: slug,
-          // eslint-disable-next-line camelcase
           image: logo_url || image_url,
           bio: "org bio",
-          // eslint-disable-next-line camelcase
           createdById: created_by
         });
 
         return NextResponse.json({ message: "User created" }, { status: 201 });
       } catch (err) {
         console.log(err);
+        return NextResponse.json(
+          { message: "Internal Server Error" },
+          { status: 500 }
+        );
+      }
+
+    case eventTypes.organizationUpdated:
+      try {
+        const { id, logo_url, name, slug } = eventData as OrganizationJSON
+
+        await updateCommunityInfo({
+          communityId: id,
+          name,
+          username: slug,
+          image: logo_url,
+        });
+
+        return NextResponse.json({ message: "Member removed" }, { status: 201 });
+      } catch (err) {
+        console.log(err);
+
         return NextResponse.json(
           { message: "Internal Server Error" },
           { status: 500 }
