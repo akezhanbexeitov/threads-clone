@@ -42,10 +42,8 @@ export async function createCommunity(
     await user.save();
 
     return createdCommunity;
-  } catch (error) {
-    // Handle any errors
-    console.error("Error creating community:", error);
-    throw error;
+  } catch (error: any) {
+    throw new Error(`Error creating community: ${error.message}`)
   }
 }
 
