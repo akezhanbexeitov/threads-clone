@@ -3,8 +3,8 @@
 
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
-import { OrganizationInvitationJSON, OrganizationJSON, WebhookEvent } from '@clerk/nextjs/server'
-import { addMemberToCommunity, createCommunity, updateCommunityInfo } from '@/lib/actions/community.actions';
+import { OrganizationInvitationJSON, OrganizationJSON, OrganizationMembershipJSON, WebhookEvent } from '@clerk/nextjs/server'
+import { addMemberToCommunity, createCommunity, deleteCommunity, updateCommunityInfo } from '@/lib/actions/community.actions';
 import { NextResponse } from 'next/server';
 
 type EventType =
@@ -152,6 +152,41 @@ export async function POST(req: Request) {
           { status: 500 }
         );
       }
+
+    case eventTypes.organizationDeleted:
+      try {
+      const { id } = eventData as OrganizationJSON
+
+      await deleteCommunity(id)
+
+      return NextResponse.json({ message: "Member removed" }, { status: 201 });
+    } catch (err) {
+      console.log(err);
+
+      return NextResponse.json(
+        { message: "Internal Server Error" },
+        { status: 500 }
+      );
+      }
+      
+    case eventTypes.organizationMembershipCreated:
+      try {
+      const { organization, public_user_data } = eventData as OrganizationMembershipJSON;
+
+      await addMemberToCommunity(organization.id, public_user_data.identifier);
+
+      return NextResponse.json(
+        { message: "Invitation accepted" },
+        { status: 201 }
+      );
+    } catch (err) {
+      console.log(err);
+
+      return NextResponse.json(
+        { message: "Internal Server Error" },
+        { status: 500 }
+      );
+    }
 
   }
  
