@@ -5,17 +5,25 @@ import { FilterQuery, SortOrder } from "mongoose";
 import Community from "../models/community.model";
 import Thread from "../models/thread.model";
 import User from "../models/user.model";
-
 import { connectToDB } from "../mongoose";
 
-export async function createCommunity(
-  id: string,
-  name: string,
-  username: string,
-  image: string,
-  bio: string,
-  createdById: string // Change the parameter name to reflect it's an id
-) {
+interface IParams {
+  id: string;
+  name: string;
+  username: string | null;
+  image: string;
+  bio: string;
+  createdById: string;
+}
+
+export async function createCommunity({
+  id,
+  name,
+  username,
+  image,
+  bio,
+  createdById,
+}: IParams) {
   try {
     connectToDB();
 

@@ -1,6 +1,25 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
-import { WebhookEvent } from '@clerk/nextjs/server'
+import { OrganizationJSON, WebhookEvent } from '@clerk/nextjs/server'
+import { createCommunity } from '@/lib/actions/community.actions';
+import { NextResponse } from 'next/server';
+
+type EventType =
+  | "organization.created"
+  | "organizationInvitation.created"
+  | "organizationMembership.created"
+  | "organizationMembership.deleted"
+  | "organization.updated"
+  | "organization.deleted";
+
+const eventTypes: Record<string, EventType> = {
+  organizationCreated: "organization.created",
+  organizationUpdated: "organization.updated",
+  organizationDeleted: "organization.deleted",
+  organizationInvitationCreated: "organizationInvitation.created",
+  organizationMembershipCreated: "organizationMembership.created",
+  organizationMembershipDeleted: "organizationMembership.deleted",
+}
  
 export async function POST(req: Request) {
  
@@ -48,11 +67,35 @@ export async function POST(req: Request) {
   }
  
   // Get the ID and type
-  const { id } = evt.data;
+  const eventData = evt.data
   const eventType = evt.type;
  
-  console.log(`Webhook with and ID of ${id} and type of ${eventType}`)
-  console.log('Webhook body:', body)
+  switch (eventType) {
+    case eventTypes.organizationCreated:
+      // eslint-disable-next-line no-case-declarations, camelcase
+      const { id, name, slug, logo_url, image_url, created_by } = eventData as OrganizationJSON
+
+      try {
+        await createCommunity({
+          id,
+          name,
+          username: slug,
+          // eslint-disable-next-line camelcase
+          image: logo_url || image_url,
+          bio: "org bio",
+          // eslint-disable-next-line camelcase
+          createdById: created_by
+        });
+
+        return NextResponse.json({ message: "User created" }, { status: 201 });
+      } catch (err) {
+        console.log(err);
+        return NextResponse.json(
+          { message: "Internal Server Error" },
+          { status: 500 }
+        );
+      }
+  }
  
   return new Response('', { status: 200 })
 }
