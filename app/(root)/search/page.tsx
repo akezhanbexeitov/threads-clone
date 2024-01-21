@@ -25,7 +25,7 @@ export default async function Page() {
 
       <div className="mt-14 flex flex-col gap-9">
         {users.users.length === 0 ? (
-          <p className="no-result">No users</p>
+          <p className="no-result">No users found</p>
         ) : (
           <>
             {users.users.map((person) => (

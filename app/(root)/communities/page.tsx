@@ -25,7 +25,7 @@ export default async function Page() {
 
       <div className="mt-14 flex flex-col gap-9">
         {communities.length === 0 ? (
-          <p className="no-result">No communities</p>
+          <p className="no-result">No communities found</p>
         ) : (
           <>
             {communities.map((community) => (
