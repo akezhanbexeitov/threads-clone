@@ -3,8 +3,8 @@
 
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
-import { OrganizationInvitationJSON, OrganizationJSON, OrganizationMembershipJSON, WebhookEvent } from '@clerk/nextjs/server'
-import { addMemberToCommunity, createCommunity, deleteCommunity, updateCommunityInfo } from '@/lib/actions/community.actions';
+import { OrganizationJSON, OrganizationMembershipJSON, WebhookEvent } from '@clerk/nextjs/server'
+import { addMemberToCommunity, createCommunity, deleteCommunity, removeUserFromCommunity, updateCommunityInfo } from '@/lib/actions/community.actions';
 import { NextResponse } from 'next/server';
 
 type EventType =
@@ -21,7 +21,6 @@ const eventTypes: Record<string, EventType> = {
   organizationUpdated: "organization.updated",
   organizationDeleted: "organization.deleted",
   organizationInvitationCreated: "organizationInvitation.created",
-  organizationInvitationAccepted: "organizationInvitation.accepted",
   organizationMembershipCreated: "organizationMembership.created",
   organizationMembershipDeleted: "organizationMembership.deleted",
 }
@@ -119,6 +118,22 @@ export async function POST(req: Request) {
         );
       }
 
+    case eventTypes.organizationDeleted:
+      try {
+        const { id } = eventData as OrganizationJSON
+
+        await deleteCommunity(id)
+
+        return NextResponse.json({ message: "Member removed" }, { status: 201 });
+      } catch (err) {
+        console.log(err);
+
+        return NextResponse.json(
+          { message: "Internal Server Error" },
+          { status: 500 }
+        );
+      }
+
     case eventTypes.organizationInvitationCreated:
       try {
         return NextResponse.json(
@@ -134,46 +149,11 @@ export async function POST(req: Request) {
         );
       }
 
-    case eventTypes.organizationInvitationAccepted:
-      try {
-        const { organization_id, email_address } = eventData as OrganizationInvitationJSON
-
-        await addMemberToCommunity(organization_id, email_address);
-
-        return NextResponse.json(
-          { message: "Invitation accepted" },
-          { status: 201 }
-        );
-      } catch (err) {
-        console.log(err);
-
-        return NextResponse.json(
-          { message: "Internal Server Error" },
-          { status: 500 }
-        );
-      }
-
-    case eventTypes.organizationDeleted:
-      try {
-      const { id } = eventData as OrganizationJSON
-
-      await deleteCommunity(id)
-
-      return NextResponse.json({ message: "Member removed" }, { status: 201 });
-    } catch (err) {
-      console.log(err);
-
-      return NextResponse.json(
-        { message: "Internal Server Error" },
-        { status: 500 }
-      );
-      }
-      
     case eventTypes.organizationMembershipCreated:
       try {
       const { organization, public_user_data } = eventData as OrganizationMembershipJSON;
 
-      await addMemberToCommunity(organization.id, public_user_data.identifier);
+      await addMemberToCommunity(organization.id, public_user_data.user_id);
 
       return NextResponse.json(
         { message: "Invitation accepted" },
@@ -188,6 +168,21 @@ export async function POST(req: Request) {
       );
     }
 
+    case eventTypes.organizationMembershipDeleted:
+      try {
+      const { organization, public_user_data } = eventData as OrganizationMembershipJSON;
+
+      await removeUserFromCommunity(public_user_data.user_id, organization.id);
+
+      return NextResponse.json({ message: "Member removed" }, { status: 201 });
+    } catch (err) {
+      console.log(err);
+
+      return NextResponse.json(
+        { message: "Internal Server Error" },
+        { status: 500 }
+      );
+    }
   }
  
   return new Response('', { status: 200 })
