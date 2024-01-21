@@ -173,7 +173,7 @@ export async function POST(req: Request) {
       try {
       const { organization, public_user_data } = eventData as OrganizationMembershipJSON;
 
-      await addMemberToCommunity(organization.id, public_user_data.user_id);
+      await addMemberToCommunity(organization.id, public_user_data.identifier);
 
       return NextResponse.json(
         { message: "Invitation accepted" },
