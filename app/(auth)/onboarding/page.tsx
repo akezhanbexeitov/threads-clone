@@ -16,7 +16,10 @@ async function Page() {
     name: userInfo?.name || user?.firstName || "",
     bio: userInfo?.bio || "",
     image: userInfo?.image || user?.imageUrl,
+    email: userInfo?.email || user?.emailAddresses[0].emailAddress,
   };
+
+  console.log(userData);
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col justify-start px-10 py-20">

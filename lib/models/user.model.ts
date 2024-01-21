@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema({
     },
     image: String,
     bio: String,
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
     threads: [
         {
             type: mongoose.Schema.Types.ObjectId,

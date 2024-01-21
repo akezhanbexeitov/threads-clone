@@ -2,11 +2,9 @@
 
 import { FilterQuery, SortOrder } from "mongoose";
 import { revalidatePath } from "next/cache";
-
 import Community from "../models/community.model";
 import Thread from "../models/thread.model";
 import User from "../models/user.model";
-
 import { connectToDB } from "../mongoose";
 
 export async function fetchUser(userId: string) {
@@ -29,6 +27,7 @@ interface Params {
   bio: string;
   image: string;
   path: string;
+  email: string
 }
 
 export async function updateUser({
@@ -38,18 +37,22 @@ export async function updateUser({
   path,
   username,
   image,
+  email
 }: Params): Promise<void> {
   try {
     connectToDB();
 
+    console.log("EMAIL : ", email)
+
     await User.findOneAndUpdate(
       { id: userId },
       {
-        username: username.toLowerCase(),
-        name,
-        bio,
+        username: username.toLowerCase().trim(),
+        name: name.trim(),
+        bio: bio.trim(),
         image,
         onboarded: true,
+        email
       },
       { upsert: true }
     );
@@ -88,9 +91,8 @@ export async function fetchUserThreads(userId: string) {
       ],
     });
     return threads;
-  } catch (error) {
-    console.error("Error fetching user threads:", error);
-    throw error;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch user threads: ${error.message}`);
   }
 }
 
@@ -147,9 +149,8 @@ export async function fetchUsers({
     const isNext = totalUsersCount > skipAmount + users.length;
 
     return { users, isNext };
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    throw error;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch users: ${error.message}`);
   }
 }
 
@@ -176,8 +177,7 @@ export async function getNotifications(userId: string) {
     });
 
     return replies;
-  } catch (error) {
-    console.error("Error fetching replies: ", error);
-    throw error;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch notifications: ${error.message}`);
   }
 }

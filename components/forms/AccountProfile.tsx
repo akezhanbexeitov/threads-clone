@@ -30,6 +30,7 @@ interface IProps {
     name: string;
     bio: string;
     image: string;
+    email: string;
   };
   btnTitle: string;
 }
@@ -84,6 +85,7 @@ const AccountProfile: FC<IProps> = ({ user, btnTitle }) => {
       name: values.name,
       image: values.profile_photo,
       bio: values.bio,
+      email: user.email,
       path: pathname,
     });
 
