@@ -138,7 +138,6 @@ export async function POST(req: Request) {
       try {
         const { organization_id, email_address } = eventData as OrganizationInvitationJSON
 
-        // @ts-ignore
         await addMemberToCommunity(organization_id, email_address);
 
         return NextResponse.json(

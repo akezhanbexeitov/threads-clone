@@ -167,7 +167,7 @@ export async function fetchCommunities({
 
 export async function addMemberToCommunity(
   communityId: string,
-  email: string
+  emailAddress: string
 ) {
   try {
     connectToDB();
@@ -180,7 +180,7 @@ export async function addMemberToCommunity(
     }
 
     // Find the user by their unique id
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: emailAddress });
 
     if (!user) {
       throw new Error("User not found");
