@@ -32,6 +32,7 @@ interface IProps {
     };
   }[];
   isComment?: boolean;
+  likes: ObjectId[];
 }
 
 const ThreadCard: FC<IProps> = ({
@@ -44,6 +45,7 @@ const ThreadCard: FC<IProps> = ({
   createdAt,
   comments,
   isComment,
+  likes,
 }) => {
   return (
     <article
@@ -81,7 +83,7 @@ const ThreadCard: FC<IProps> = ({
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
               <div className="flex gap-3.5">
-                <LikeThread threadId={id} authorId={author._id} />
+                <LikeThread threadId={id} authorId={author._id} likes={likes} />
                 <Link href={`/thread/${id}`}>
                   <Image
                     src="/assets/reply.svg"

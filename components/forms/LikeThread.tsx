@@ -8,13 +8,11 @@ import { ObjectId } from "mongoose";
 interface Props {
   threadId: string;
   authorId: ObjectId;
+  likes: ObjectId[];
 }
 
-function LikeThread({ threadId, authorId }: Props) {
+function LikeThread({ threadId, authorId, likes }: Props) {
   const pathname = usePathname();
-
-  console.log("threadId", threadId);
-  console.log("authorId", authorId);
 
   const handleLikeThread = async () => {
     await addLikeToThread({
@@ -25,14 +23,24 @@ function LikeThread({ threadId, authorId }: Props) {
   };
 
   return (
-    <Image
-      src="/assets/heart-gray.svg"
-      alt="Heart"
-      width={24}
-      height={24}
-      onClick={handleLikeThread}
-      className="cursor-pointer object-contain"
-    />
+    <div className="flex items-center gap-1">
+      <Image
+        src={
+          likes.includes(authorId)
+            ? "/assets/heart-filled.svg"
+            : "/assets/heart-gray.svg"
+        }
+        alt="Heart"
+        width={24}
+        height={24}
+        onClick={handleLikeThread}
+        className="cursor-pointer object-contain"
+      />
+
+      {likes.length > 0 && (
+        <p className="text-subtle-medium text-gray-1">{likes.length}</p>
+      )}
+    </div>
   );
 }
 
