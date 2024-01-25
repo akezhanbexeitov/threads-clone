@@ -108,26 +108,15 @@ const AccountProfile: FC<IProps> = ({ user, btnTitle }) => {
           render={({ field }) => {
             return (
               <FormItem className="flex items-center gap-4">
-                <FormLabel className="account-form_image-label">
-                  {/* TODO Fix images */}
-                  {field.value ? (
-                    <Image
-                      src={field.value}
-                      alt="profile_icon"
-                      width={96}
-                      height={96}
-                      priority
-                      className="rounded-full object-cover"
-                    />
-                  ) : (
-                    <Image
-                      src="/assets/profile.svg"
-                      alt="profile_icon"
-                      width={24}
-                      height={24}
-                      className="object-cover"
-                    />
-                  )}
+                <FormLabel className="h-24 w-24 overflow-hidden rounded-full">
+                  <Image
+                    src={field.value}
+                    alt="profile_icon"
+                    width={96}
+                    height={96}
+                    priority
+                    className="h-full w-full object-cover"
+                  />
                 </FormLabel>
                 <FormControl className="flex-1 text-base-semibold text-gray-200">
                   <Input
