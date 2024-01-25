@@ -1,23 +1,23 @@
 import AccountProfile from "@/components/forms/AccountProfile";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
-// import { redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 
 async function Page() {
   const user = await currentUser();
-  if (!user) return null;
+  if (!user) redirect("sign-in");
 
   const userInfo = await fetchUser(user.id);
-  // if (userInfo.onboarded) redirect("/");
+  if (userInfo.onboarded) redirect("/");
 
   const userData = {
-    id: user?.id,
-    objectId: userInfo?._id,
-    username: userInfo?.username || user?.username,
-    name: userInfo?.name || user?.firstName || "",
-    bio: userInfo?.bio || "",
-    image: userInfo?.image || user?.imageUrl,
-    email: userInfo?.email || user?.emailAddresses[0].emailAddress,
+    id: user.id,
+    objectId: userInfo._id,
+    username: userInfo.username || user.username,
+    name: userInfo.name || user.firstName || "",
+    bio: userInfo.bio || "",
+    image: userInfo.image || user.imageUrl,
+    email: userInfo.email || user.emailAddresses[0].emailAddress,
   };
 
   return (
