@@ -5,6 +5,7 @@ import { connectToDB } from "../mongoose";
 import User from "../models/user.model";
 import Thread from "../models/thread.model";
 import Community from "../models/community.model";
+import { ObjectId } from "mongoose";
 
 export async function fetchThreads(pageNumber = 1, pageSize = 20) {
   try {
@@ -246,5 +247,30 @@ export async function addCommentToThread({
     revalidatePath(path);
   } catch (error: any) {
     throw new Error(`Failed to add comment to thread: ${error.message}`);
+  }
+}
+
+interface AddLikeToThreadParams {
+  threadId: string,
+  userId: ObjectId,
+  path: string
+}
+
+export async function addLikeToThread({
+  threadId,
+  userId,
+  path
+}: AddLikeToThreadParams) {
+  try {
+    connectToDB();
+
+    const thread = await Thread.findById(threadId)
+    thread.likes.push(userId)
+
+    await thread.save()
+
+    revalidatePath(path)
+  } catch (error: any) {
+    throw new Error(`Failed to add like to thread: ${error.message}`);
   }
 }

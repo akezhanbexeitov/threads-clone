@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
 import DeleteThread from "../forms/DeleteThread";
+import { ObjectId } from "mongoose";
+import LikeThread from "../forms/LikeThread";
 
 interface IProps {
   id: string;
@@ -13,6 +15,7 @@ interface IProps {
     name: string;
     image: string;
     id: string;
+    _id: ObjectId;
   };
   community: {
     id: string;
@@ -78,14 +81,7 @@ const ThreadCard: FC<IProps> = ({
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
               <div className="flex gap-3.5">
-                {/* TODO Implement like functionality */}
-                <Image
-                  src="/assets/heart-gray.svg"
-                  alt="Heart"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
-                />
+                <LikeThread threadId={id} authorId={author._id} />
                 <Link href={`/thread/${id}`}>
                   <Image
                     src="/assets/reply.svg"
