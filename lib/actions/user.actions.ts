@@ -23,7 +23,6 @@ export async function fetchUser(userId: string) {
 interface CreateUserParams {
   clerkId: string
   username: string | null
-  name: string
   image: string
   email: string
 }
@@ -31,7 +30,6 @@ interface CreateUserParams {
 export async function createUser({
   clerkId,
   username,
-  name,
   image,
   email
 }: CreateUserParams) {
@@ -41,7 +39,6 @@ export async function createUser({
     await User.create({
       id: clerkId,
       username,
-      name,
       image,
       email
     })

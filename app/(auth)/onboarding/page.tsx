@@ -1,14 +1,14 @@
 import AccountProfile from "@/components/forms/AccountProfile";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 
 async function Page() {
   const user = await currentUser();
   if (!user) return null;
 
   const userInfo = await fetchUser(user.id);
-  if (userInfo.onboarded) redirect("/");
+  // if (userInfo.onboarded) redirect("/");
 
   const userData = {
     id: user?.id,
@@ -19,8 +19,6 @@ async function Page() {
     image: userInfo?.image || user?.imageUrl,
     email: userInfo?.email || user?.emailAddresses[0].emailAddress,
   };
-
-  console.log(userData);
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col justify-start px-10 py-20">
