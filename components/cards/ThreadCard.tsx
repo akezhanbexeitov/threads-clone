@@ -2,6 +2,7 @@ import { formatDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
+import DeleteThread from "../forms/DeleteThread";
 
 interface IProps {
   id: string;
@@ -109,6 +110,14 @@ const ThreadCard: FC<IProps> = ({
                   width={24}
                   height={24}
                   className="cursor-pointer object-contain"
+                />
+
+                <DeleteThread
+                  threadId={JSON.stringify(id)}
+                  currentUserId={currentUserId}
+                  authorId={author.id}
+                  parentId={parentId}
+                  isComment={isComment}
                 />
               </div>
 

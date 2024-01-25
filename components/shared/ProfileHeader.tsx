@@ -24,12 +24,13 @@ const ProfileHeader: FC<IProps> = ({
     <div className="flex w-full flex-col justify-start">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="relative h-20 w-20 object-cover">
+          <div className=" h-20 w-20 overflow-hidden rounded-full">
             <Image
               src={imgUrl}
               alt="Profile image"
-              fill
-              className="rounded-full shadow-2xl"
+              width={80}
+              height={80}
+              className="h-full w-full object-cover"
             />
           </div>
 
