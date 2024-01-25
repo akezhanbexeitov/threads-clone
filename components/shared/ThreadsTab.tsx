@@ -39,11 +39,17 @@ const ThreadsTab: FC<IProps> = async ({
             content={thread.text}
             author={
               accountType === "User"
-                ? { name: threads.name, image: threads.image, id: threads.id }
+                ? {
+                    name: threads.name,
+                    image: threads.image,
+                    id: threads.id,
+                    _id: threads._id,
+                  }
                 : {
                     name: thread.author.name,
                     image: thread.author.image,
                     id: thread.author.id,
+                    _id: thread.author._id,
                   }
             }
             community={thread.community}
