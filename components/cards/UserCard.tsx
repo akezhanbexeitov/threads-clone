@@ -19,13 +19,15 @@ const UserCard: FC<IProps> = ({ id, name, username, imgUrl, personType }) => {
   return (
     <article className="user-card">
       <div className="user-card_avatar">
-        <Image
-          src={imgUrl}
-          alt="Logo"
-          width={48}
-          height={48}
-          className="rounded-full"
-        />
+        <div className="h-12 w-12 overflow-hidden rounded-full">
+          <Image
+            src={imgUrl}
+            alt="Logo"
+            width={48}
+            height={48}
+            className="h-full w-full object-cover"
+          />
+        </div>
 
         <div className="flex-1 text-ellipsis">
           <h4 className="text-base-semibold text-light-1">{name}</h4>

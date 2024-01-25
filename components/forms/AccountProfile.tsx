@@ -108,7 +108,7 @@ const AccountProfile: FC<IProps> = ({ user, btnTitle }) => {
           render={({ field }) => {
             return (
               <FormItem className="flex items-center gap-4">
-                <FormLabel className="h-24 w-24 overflow-hidden rounded-full">
+                <FormLabel className="account-form_image-label">
                   <Image
                     src={field.value}
                     alt="profile_icon"
