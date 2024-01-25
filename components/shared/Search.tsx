@@ -9,9 +9,9 @@ interface Props {
   routeType: string;
 }
 
-const Searchbar = ({ routeType }: Props) => {
+const SearchBar = ({ routeType }: Props) => {
   const router = useRouter();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string>("");
 
   // query after 0.3s of no input
   useEffect(() => {
@@ -40,7 +40,7 @@ const Searchbar = ({ routeType }: Props) => {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder={`${
-          routeType !== "/search" ? "Search communities" : "Search creators"
+          routeType !== "search" ? "Search communities" : "Search creators"
         }`}
         className="no-focus searchbar_input"
       />
@@ -48,4 +48,4 @@ const Searchbar = ({ routeType }: Props) => {
   );
 };
 
-export default Searchbar;
+export default SearchBar;

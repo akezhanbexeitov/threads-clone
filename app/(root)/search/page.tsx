@@ -1,19 +1,24 @@
 import UserCard from "@/components/cards/UserCard";
+import SearchBar from "@/components/shared/Search";
 import { fetchUser, fetchUsers } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-export default async function Page() {
+interface Params {
+  searchParams: { [key: string]: string | undefined };
+}
+
+export default async function Page({ searchParams }: Params) {
   const user = await currentUser();
   if (!user) return null;
 
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
-  const users = await fetchUsers({
+  const { users } = await fetchUsers({
     userId: user.id,
-    searchString: "",
-    pageNumber: 1,
+    searchString: searchParams.q,
+    pageNumber: searchParams?.page ? +searchParams.page : 1,
     pageSize: 25,
   });
 
@@ -21,14 +26,14 @@ export default async function Page() {
     <section>
       <h1 className="head-text mb-10">Search</h1>
 
-      {/* TODO Add search bar */}
+      <SearchBar routeType="search" />
 
       <div className="mt-14 flex flex-col gap-9">
-        {users.users.length === 0 ? (
+        {users.length === 0 ? (
           <p className="no-result">No users found</p>
         ) : (
           <>
-            {users.users.map((person) => (
+            {users.map((person) => (
               <UserCard
                 key={person.id}
                 id={person.id}
