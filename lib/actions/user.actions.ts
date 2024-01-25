@@ -20,7 +20,37 @@ export async function fetchUser(userId: string) {
   }
 }
 
-interface Params {
+interface CreateUserParams {
+  clerkId: string
+  username: string | null
+  name: string
+  image: string
+  email: string
+}
+
+export async function createUser({
+  clerkId,
+  username,
+  name,
+  image,
+  email
+}: CreateUserParams) {
+  try {
+    connectToDB()
+
+    await User.create({
+      id: clerkId,
+      username,
+      name,
+      image,
+      email
+    })
+  } catch (error: any) {
+    throw new Error(`Failed to create user: ${error.message}`);
+  }
+}
+
+interface UpdateUserParams {
   userId: string;
   username: string;
   name: string;
@@ -38,11 +68,9 @@ export async function updateUser({
   username,
   image,
   email
-}: Params): Promise<void> {
+}: UpdateUserParams): Promise<void> {
   try {
     connectToDB();
-
-    console.log("EMAIL : ", email)
 
     await User.findOneAndUpdate(
       { id: userId },

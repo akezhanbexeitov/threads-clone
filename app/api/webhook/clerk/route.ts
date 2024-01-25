@@ -3,9 +3,10 @@
 
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
-import { OrganizationJSON, OrganizationMembershipJSON, WebhookEvent } from '@clerk/nextjs/server'
+import { OrganizationJSON, OrganizationMembershipJSON, UserJSON, WebhookEvent } from '@clerk/nextjs/server'
 import { addMemberToCommunity, createCommunity, deleteCommunity, removeUserFromCommunity, updateCommunityInfo } from '@/lib/actions/community.actions';
 import { NextResponse } from 'next/server';
+import { createUser } from '@/lib/actions/user.actions';
 
 type EventType =
   | "organization.created"
@@ -15,6 +16,7 @@ type EventType =
   | "organization.updated"
   | "organization.deleted"
   | "organizationInvitation.accepted"
+  | "user.created"
 
 const eventTypes: Record<string, EventType> = {
   organizationCreated: "organization.created",
@@ -23,6 +25,7 @@ const eventTypes: Record<string, EventType> = {
   organizationInvitationCreated: "organizationInvitation.created",
   organizationMembershipCreated: "organizationMembership.created",
   organizationMembershipDeleted: "organizationMembership.deleted",
+  userCreated: "user.created",
 }
 
 export async function POST(req: Request) {
@@ -170,19 +173,41 @@ export async function POST(req: Request) {
 
     case eventTypes.organizationMembershipDeleted:
       try {
-      const { organization, public_user_data } = eventData as OrganizationMembershipJSON;
+        const { organization, public_user_data } = eventData as OrganizationMembershipJSON;
 
-      await removeUserFromCommunity(public_user_data.user_id, organization.id);
+        await removeUserFromCommunity(public_user_data.user_id, organization.id);
 
-      return NextResponse.json({ message: "Member removed" }, { status: 201 });
-    } catch (err) {
-      console.log(err);
+        return NextResponse.json({ message: "Member removed" }, { status: 201 });
+      } catch (err) {
+        console.log(err);
 
-      return NextResponse.json(
-        { message: "Internal Server Error" },
-        { status: 500 }
-      );
-    }
+        return NextResponse.json(
+          { message: "Internal Server Error" },
+          { status: 500 }
+        );
+      }
+
+    case eventTypes.userCreated:
+      try {
+        const { id, username, image_url, email_addresses } = eventData as UserJSON
+
+        await createUser({
+          clerkId: id,
+          username,
+          name: "",
+          image: image_url,
+          email: email_addresses[0].email_address
+        })
+
+        return NextResponse.json({ message: "User created" }, { status: 201 });
+      } catch (error) {
+        console.log(error);
+
+        return NextResponse.json(
+          { message: "Internal Server Error" },
+          { status: 500 }
+        );
+      }
   }
  
   return new Response('', { status: 200 })
