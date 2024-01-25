@@ -47,12 +47,16 @@ const ThreadCard: FC<IProps> = ({
       <div className="flex items-start justify-between">
         <div className="flex w-full flex-1 flex-row gap-4">
           <div className="flex flex-col items-center">
-            <Link href={`/profile/${author.id}`} className="relative h-11 w-11">
+            <Link
+              href={`/profile/${author.id}`}
+              className="h-11 w-11 overflow-hidden rounded-full"
+            >
               <Image
                 src={author.image}
                 alt="Profile image"
-                fill
-                className="cursor-pointer rounded-full"
+                width={44}
+                height={44}
+                className="h-full w-full object-cover"
               />
             </Link>
 

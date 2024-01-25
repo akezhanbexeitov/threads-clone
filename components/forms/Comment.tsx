@@ -54,13 +54,13 @@ const Comment: FC<IProps> = ({ threadId, currentUserImage, currentUserId }) => {
           name="thread"
           render={({ field }) => (
             <FormItem className="flex w-full items-center gap-3">
-              <FormLabel>
+              <FormLabel className="h-12 w-12 overflow-hidden rounded-full">
                 <Image
                   src={currentUserImage}
                   alt="Profile image"
                   width={48}
                   height={48}
-                  className="rounded-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               </FormLabel>
               <div className="flex w-full flex-col">
