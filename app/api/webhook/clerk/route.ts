@@ -3,10 +3,10 @@
 
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
-import { OrganizationJSON, OrganizationMembershipJSON, UserJSON, WebhookEvent } from '@clerk/nextjs/server'
+import { DeletedObjectJSON, OrganizationJSON, OrganizationMembershipJSON, UserJSON, WebhookEvent } from '@clerk/nextjs/server'
 import { addMemberToCommunity, createCommunity, deleteCommunity, removeUserFromCommunity, updateCommunityInfo } from '@/lib/actions/community.actions';
 import { NextResponse } from 'next/server';
-import { createUser } from '@/lib/actions/user.actions';
+import { createUser, deleteUser } from '@/lib/actions/user.actions';
 
 type EventType =
   | "organization.created"
@@ -17,6 +17,7 @@ type EventType =
   | "organization.deleted"
   | "organizationInvitation.accepted"
   | "user.created"
+  | "user.deleted"
 
 const eventTypes: Record<string, EventType> = {
   organizationCreated: "organization.created",
@@ -26,6 +27,7 @@ const eventTypes: Record<string, EventType> = {
   organizationMembershipCreated: "organizationMembership.created",
   organizationMembershipDeleted: "organizationMembership.deleted",
   userCreated: "user.created",
+  userDeleted: "user.deleted",
 }
 
 export async function POST(req: Request) {
@@ -198,6 +200,22 @@ export async function POST(req: Request) {
           email: email_addresses[0].email_address
         })
 
+        return NextResponse.json({ message: "User created" }, { status: 201 });
+      } catch (error) {
+        console.log(error);
+
+        return NextResponse.json(
+          { message: "Internal Server Error" },
+          { status: 500 }
+        );
+      }
+
+    case eventTypes.userDeleted:
+      try {
+        const { id } = eventData as DeletedObjectJSON
+
+        await deleteUser(id)
+        
         return NextResponse.json({ message: "User created" }, { status: 201 });
       } catch (error) {
         console.log(error);

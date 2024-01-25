@@ -47,6 +47,16 @@ export async function createUser({
   }
 }
 
+export async function deleteUser(userId: string | undefined) {
+  try {
+    connectToDB()
+
+    await User.findOneAndDelete({ id: userId })
+  } catch (error: any) {
+    throw new Error(`Failed to delete user: ${error.message}`);
+  }
+}
+
 interface UpdateUserParams {
   userId: string;
   username: string;
