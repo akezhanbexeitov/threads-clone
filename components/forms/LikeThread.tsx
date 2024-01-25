@@ -2,7 +2,10 @@
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { addLikeToThread } from "@/lib/actions/thread.actions";
+import {
+  addLikeToThread,
+  removeLikeFromThread,
+} from "@/lib/actions/thread.actions";
 import { ObjectId } from "mongoose";
 
 interface Props {
@@ -14,12 +17,20 @@ interface Props {
 function LikeThread({ threadId, authorId, likes }: Props) {
   const pathname = usePathname();
 
-  const handleLikeThread = async () => {
-    await addLikeToThread({
-      threadId,
-      userId: authorId,
-      path: pathname,
-    });
+  const toggleThreadLike = async () => {
+    if (likes.includes(authorId)) {
+      await removeLikeFromThread({
+        threadId,
+        userId: authorId,
+        path: pathname,
+      });
+    } else {
+      await addLikeToThread({
+        threadId,
+        userId: authorId,
+        path: pathname,
+      });
+    }
   };
 
   return (
@@ -33,7 +44,7 @@ function LikeThread({ threadId, authorId, likes }: Props) {
         alt="Heart"
         width={24}
         height={24}
-        onClick={handleLikeThread}
+        onClick={toggleThreadLike}
         className="cursor-pointer object-contain"
       />
 

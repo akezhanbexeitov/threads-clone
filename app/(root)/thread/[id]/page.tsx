@@ -35,6 +35,7 @@ export default async function Page({ params }: IProps) {
           community={thread.community}
           createdAt={thread.createdAt}
           comments={thread.children}
+          likes={thread.likes}
         />
       </div>
 
@@ -59,6 +60,7 @@ export default async function Page({ params }: IProps) {
             createdAt={child.createdAt}
             comments={child.children}
             isComment={true}
+            likes={child.likes}
           />
         ))}
       </div>

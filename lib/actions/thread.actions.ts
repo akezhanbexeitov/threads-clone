@@ -250,7 +250,7 @@ export async function addCommentToThread({
   }
 }
 
-interface AddLikeToThreadParams {
+interface ThreadLikeParams {
   threadId: string,
   userId: ObjectId,
   path: string
@@ -260,7 +260,7 @@ export async function addLikeToThread({
   threadId,
   userId,
   path
-}: AddLikeToThreadParams) {
+}: ThreadLikeParams) {
   try {
     connectToDB();
 
@@ -272,5 +272,24 @@ export async function addLikeToThread({
     revalidatePath(path)
   } catch (error: any) {
     throw new Error(`Failed to add like to thread: ${error.message}`);
+  }
+}
+
+export async function removeLikeFromThread({
+  threadId,
+  userId,
+  path
+}: ThreadLikeParams) {
+  try {
+    connectToDB();
+
+    const thread = await Thread.findById(threadId)
+    thread.likes.pull(userId)
+
+    await thread.save()
+
+    revalidatePath(path)
+  } catch (error: any) { 
+    throw new Error(`Failed to remove like from thread: ${error.message}`);
   }
 }
