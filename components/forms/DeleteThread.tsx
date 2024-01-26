@@ -3,6 +3,17 @@
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { deleteThread } from "@/lib/actions/thread.actions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 interface Props {
   threadId: string;
@@ -32,15 +43,34 @@ function DeleteThread({
   };
 
   return (
-    <div className="flex h-6 w-6 cursor-pointer items-center justify-center">
-      <Image
-        src="/assets/delete.svg"
-        alt="delete thread"
-        width={18}
-        height={18}
-        onClick={handleDeleteThread}
-      />
-    </div>
+    <AlertDialog>
+      <AlertDialogTrigger>
+        <div className="flex h-6 w-6 cursor-pointer items-center justify-center">
+          <Image
+            src="/assets/delete.svg"
+            alt="delete thread"
+            width={18}
+            height={18}
+          />
+        </div>
+      </AlertDialogTrigger>
+
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your
+            thread and all corresponding likes and comments.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleDeleteThread}>
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 
