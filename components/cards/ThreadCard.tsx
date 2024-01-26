@@ -5,6 +5,12 @@ import { FC } from "react";
 import DeleteThread from "../forms/DeleteThread";
 import { ObjectId } from "mongoose";
 import LikeThread from "../forms/LikeThread";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 interface IProps {
   id: string;
@@ -82,42 +88,87 @@ const ThreadCard: FC<IProps> = ({
             <p className="mt-2 text-small-regular text-light-2">{content}</p>
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
-              <div className="flex gap-3.5">
-                <LikeThread threadId={id} authorId={author._id} likes={likes} />
-                <Link href={`/thread/${id}`}>
-                  <Image
-                    src="/assets/reply.svg"
-                    alt="Reply"
-                    width={24}
-                    height={24}
-                    className="cursor-pointer object-contain"
-                  />
-                </Link>
-                {/* TODO Implement repost functionality */}
-                <Image
-                  src="/assets/repost.svg"
-                  alt="Repost"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
-                />
-                {/* TODO Implement share functionality */}
-                <Image
-                  src="/assets/share.svg"
-                  alt="Share"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
-                />
+              <TooltipProvider>
+                <div className="flex gap-3.5">
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <LikeThread
+                        threadId={id}
+                        authorId={author._id}
+                        likes={likes}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-subtle-medium text-gray-1">Like</p>
+                    </TooltipContent>
+                  </Tooltip>
 
-                <DeleteThread
-                  threadId={JSON.stringify(id)}
-                  currentUserId={currentUserId}
-                  authorId={author.id}
-                  parentId={parentId}
-                  isComment={isComment}
-                />
-              </div>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Link href={`/thread/${id}`}>
+                        <Image
+                          src="/assets/reply.svg"
+                          alt="Reply"
+                          width={24}
+                          height={24}
+                          className="cursor-pointer object-contain"
+                        />
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-subtle-medium text-gray-1">Reply</p>
+                    </TooltipContent>
+                  </Tooltip>
+
+                  {/* TODO Implement repost functionality */}
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Image
+                        src="/assets/repost.svg"
+                        alt="Repost"
+                        width={24}
+                        height={24}
+                        className="cursor-pointer object-contain"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-subtle-medium text-gray-1">Repost</p>
+                    </TooltipContent>
+                  </Tooltip>
+
+                  {/* TODO Implement share functionality */}
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Image
+                        src="/assets/share.svg"
+                        alt="Share"
+                        width={24}
+                        height={24}
+                        className="cursor-pointer object-contain"
+                      />
+                    </TooltipTrigger>
+
+                    <TooltipContent>
+                      <p className="text-subtle-medium text-gray-1">Share</p>
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <DeleteThread
+                        threadId={JSON.stringify(id)}
+                        currentUserId={currentUserId}
+                        authorId={author.id}
+                        parentId={parentId}
+                        isComment={isComment}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-subtle-medium text-gray-1">Delete</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              </TooltipProvider>
 
               {isComment && comments.length > 0 && (
                 <Link href={`/thread/${id}`}>
