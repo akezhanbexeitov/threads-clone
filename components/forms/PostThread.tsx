@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useState } from "react";
 import {
   Form,
   FormControl,
@@ -18,12 +18,15 @@ import { Textarea } from "../ui/textarea";
 import { usePathname, useRouter } from "next/navigation";
 import { createThread } from "@/lib/actions/thread.actions";
 import { useOrganization } from "@clerk/nextjs";
+import Loader from "../ui/Loader";
 
 interface IProps {
   userId: string;
 }
 
 const PostThread: FC<IProps> = ({ userId }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const pathname = usePathname();
   const router = useRouter();
   const { organization } = useOrganization();
@@ -37,14 +40,22 @@ const PostThread: FC<IProps> = ({ userId }) => {
   });
 
   const onSubmit = async (values: z.infer<typeof ThreadValidation>) => {
-    await createThread({
-      text: values.thread,
-      author: userId,
-      path: pathname,
-      communityId: organization ? organization.id : null,
-    });
+    try {
+      setIsLoading(true);
 
-    router.push("/");
+      await createThread({
+        text: values.thread,
+        author: userId,
+        path: pathname,
+        communityId: organization ? organization.id : null,
+      });
+
+      router.push("/");
+    } catch (error: any) {
+      throw new Error(`Error creating thread: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -70,7 +81,7 @@ const PostThread: FC<IProps> = ({ userId }) => {
         />
 
         <Button type="submit" className="bg-primary-500">
-          Post Thread
+          {isLoading ? <Loader /> : "Post Thread"}
         </Button>
       </form>
     </Form>

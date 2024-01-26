@@ -21,6 +21,7 @@ import { isBase64Image } from "@/lib/utils";
 import { useUploadThing } from "@/lib/uploadthing";
 import { updateUser } from "@/lib/actions/user.actions";
 import { usePathname, useRouter } from "next/navigation";
+import Loader from "../ui/Loader";
 
 interface IProps {
   user: {
@@ -37,6 +38,7 @@ interface IProps {
 
 const AccountProfile: FC<IProps> = ({ user, btnTitle }) => {
   const [files, setFiles] = useState<File[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { startUpload } = useUploadThing("media");
   const pathname = usePathname();
   const router = useRouter();
@@ -70,29 +72,37 @@ const AccountProfile: FC<IProps> = ({ user, btnTitle }) => {
   };
 
   const onSubmit = async (values: z.infer<typeof UserValidation>) => {
-    const blob = values.profile_photo;
-    const hasImageChanged = isBase64Image(blob);
-    if (hasImageChanged) {
-      const imgRes = await startUpload(files);
-      if (imgRes && imgRes[0].fileUrl) {
-        values.profile_photo = imgRes[0].fileUrl;
+    try {
+      setIsLoading(true);
+
+      const blob = values.profile_photo;
+      const hasImageChanged = isBase64Image(blob);
+      if (hasImageChanged) {
+        const imgRes = await startUpload(files);
+        if (imgRes && imgRes[0].fileUrl) {
+          values.profile_photo = imgRes[0].fileUrl;
+        }
       }
-    }
 
-    await updateUser({
-      userId: user.id,
-      username: values.username,
-      name: values.name,
-      image: values.profile_photo,
-      bio: values.bio,
-      email: user.email,
-      path: pathname,
-    });
+      await updateUser({
+        userId: user.id,
+        username: values.username,
+        name: values.name,
+        image: values.profile_photo,
+        bio: values.bio,
+        email: user.email,
+        path: pathname,
+      });
 
-    if (pathname === "/profile/edit") {
-      router.back();
-    } else {
-      router.push("/");
+      if (pathname === "/profile/edit") {
+        router.back();
+      } else {
+        router.push("/");
+      }
+    } catch (error: any) {
+      throw new Error(`Error submitting the form: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -182,7 +192,7 @@ const AccountProfile: FC<IProps> = ({ user, btnTitle }) => {
         />
 
         <Button type="submit" className="bg-primary-500">
-          {btnTitle}
+          {isLoading ? <Loader /> : btnTitle}
         </Button>
       </form>
     </Form>

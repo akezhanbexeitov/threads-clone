@@ -65,7 +65,10 @@ function DeleteThread({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDeleteThread}>
+          <AlertDialogAction
+            onClick={handleDeleteThread}
+            className="bg-primary-500"
+          >
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>

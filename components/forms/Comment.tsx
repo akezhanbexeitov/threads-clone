@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useState } from "react";
 import {
   Form,
   FormControl,
@@ -18,6 +18,7 @@ import { Input } from "../ui/input";
 import { usePathname } from "next/navigation";
 import { addCommentToThread } from "@/lib/actions/thread.actions";
 import Image from "next/image";
+import Loader from "../ui/Loader";
 
 interface IProps {
   threadId: string;
@@ -26,6 +27,8 @@ interface IProps {
 }
 
 const Comment: FC<IProps> = ({ threadId, currentUserImage, currentUserId }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const pathname = usePathname();
 
   const form = useForm({
@@ -36,14 +39,22 @@ const Comment: FC<IProps> = ({ threadId, currentUserImage, currentUserId }) => {
   });
 
   const onSubmit = async (values: z.infer<typeof CommentValidation>) => {
-    await addCommentToThread({
-      threadId,
-      commentText: values.thread,
-      userId: JSON.parse(currentUserId),
-      path: pathname,
-    });
+    try {
+      setIsLoading(true);
 
-    form.reset();
+      await addCommentToThread({
+        threadId,
+        commentText: values.thread,
+        userId: JSON.parse(currentUserId),
+        path: pathname,
+      });
+
+      form.reset();
+    } catch (error: any) {
+      throw new Error(`Error adding comment: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -79,7 +90,7 @@ const Comment: FC<IProps> = ({ threadId, currentUserImage, currentUserId }) => {
         />
 
         <Button type="submit" className="comment-form_btn">
-          Reply
+          {isLoading ? <Loader /> : "Reply"}
         </Button>
       </form>
     </Form>
