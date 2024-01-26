@@ -26,13 +26,16 @@ export default async function Page() {
                 href={`/thread/${notification.parentId}`}
               >
                 <article className="activity-card">
-                  <Image
-                    src={notification.author.image}
-                    alt="Profile picture"
-                    width={20}
-                    height={20}
-                    className="rounded-full object-cover"
-                  />
+                  <div className="h-5 w-5 overflow-hidden rounded-full">
+                    <Image
+                      src={notification.author.image}
+                      alt="Profile picture"
+                      width={20}
+                      height={20}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+
                   <p className="!text-small-regular text-light-1">
                     <span className="mr-1 text-primary-500">
                       {notification.author.name}

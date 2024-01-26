@@ -6,7 +6,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -60,31 +59,30 @@ const Comment: FC<IProps> = ({ threadId, currentUserImage, currentUserId }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="comment-form">
+        <div className="h-12 w-12 overflow-hidden rounded-full">
+          <Image
+            src={currentUserImage}
+            alt="Profile image"
+            width={48}
+            height={48}
+            className="h-full w-full object-cover"
+          />
+        </div>
+
         <FormField
           control={form.control}
           name="thread"
           render={({ field }) => (
-            <FormItem className="flex w-full items-center gap-3">
-              <FormLabel className="h-12 w-12 overflow-hidden rounded-full">
-                <Image
-                  src={currentUserImage}
-                  alt="Profile image"
-                  width={48}
-                  height={48}
-                  className="h-full w-full object-cover"
+            <FormItem className="flex-auto">
+              <FormControl className="border-none bg-transparent">
+                <Input
+                  type="text"
+                  placeholder="Comment..."
+                  className="no-focus text-light-1 outline-none"
+                  {...field}
                 />
-              </FormLabel>
-              <div className="flex w-full flex-col">
-                <FormControl className="border-none bg-transparent">
-                  <Input
-                    type="text"
-                    placeholder="Comment..."
-                    className="no-focus text-light-1 outline-none"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className="px-3 py-2" />
-              </div>
+              </FormControl>
+              <FormMessage className="px-3 py-2" />
             </FormItem>
           )}
         />
