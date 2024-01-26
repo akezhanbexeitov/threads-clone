@@ -216,3 +216,22 @@ export async function getNotifications(userId: string) {
     throw new Error(`Failed to fetch notifications: ${error.message}`);
   }
 }
+
+export async function getSuggestedUsers() {
+  try {
+    connectToDB()
+
+    const users = await User.find({})
+      .populate({
+        path: "threads",
+        model: Thread
+      })
+      .sort({ threads: -1})
+      .select("id name username image threads")
+      .limit(3)
+    
+    return users
+  } catch (error: any) {
+    throw new Error(`Failed to fetch suggested users: ${error.message}`);
+  }
+}
