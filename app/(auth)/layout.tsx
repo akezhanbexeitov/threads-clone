@@ -19,7 +19,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${inter.className} bg-dark-1`}>
-          <div className="flex min-h-screen w-full items-center justify-center">
+          <div
+            className="flex w-full items-center justify-center"
+            style={{ minHeight: "100svh" }}
+          >
             {children}
           </div>
         </body>

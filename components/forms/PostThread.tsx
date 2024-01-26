@@ -62,7 +62,7 @@ const PostThread: FC<IProps> = ({ userId }) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mt-10 flex flex-col justify-start gap-10"
+        className="mt-4 flex flex-col justify-start gap-10 md:mt-10"
       >
         <FormField
           control={form.control}

@@ -73,7 +73,7 @@ const Comment: FC<IProps> = ({ threadId, currentUserImage, currentUserId }) => {
           control={form.control}
           name="thread"
           render={({ field }) => (
-            <FormItem className="flex-auto">
+            <FormItem className="w-full md:flex-auto">
               <FormControl className="border-none bg-transparent">
                 <Input
                   type="text"
