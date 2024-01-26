@@ -1,4 +1,4 @@
-# Threads Clone (english)
+# Threads Clone
 This is a pet project which is actually a Threads or Twitter logic based. After user is authorized he is able to post a thread, like other people's threads, find other people, leave comments to other threads. 
 
 
