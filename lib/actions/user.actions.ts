@@ -52,6 +52,7 @@ export async function deleteUser(userId: string | undefined) {
     connectToDB()
 
     await User.findOneAndDelete({ id: userId })
+    await Thread.deleteMany({ author: userId })
   } catch (error: any) {
     throw new Error(`Failed to delete user: ${error.message}`);
   }
