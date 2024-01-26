@@ -117,7 +117,7 @@ const AccountProfile: FC<IProps> = ({ user, btnTitle }) => {
           name="profile_photo"
           render={({ field }) => {
             return (
-              <FormItem className="flex items-center gap-4">
+              <FormItem className="flex flex-col items-center gap-4 md:flex-row">
                 <FormLabel className="account-form_image-label">
                   <Image
                     src={field.value}
