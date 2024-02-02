@@ -32,7 +32,12 @@ const threadSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Thread"
         }
-    ]
+    ],
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        required: true
+    }
 })
 
 const Thread = mongoose.models.Thread || mongoose.model("Thread", threadSchema)

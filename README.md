@@ -36,6 +36,5 @@ This is a pet project which is actually a Threads or Twitter logic based. After 
 - Add photos in tweets
 - Add back link for the threads
 - Remove the user himself from the suggested users field
-- Threads on the main page are going from the oldest to latest reverse it
 - Connect web app user profile photo changing to Clerk profile photo
 - Create a communities suggestions algorithm
