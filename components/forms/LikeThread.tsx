@@ -7,6 +7,7 @@ import {
   removeLikeFromThread,
 } from "@/lib/actions/thread.actions";
 import { ObjectId } from "mongoose";
+import { useState } from "react";
 
 interface Props {
   threadId: string;
@@ -15,43 +16,80 @@ interface Props {
 }
 
 function LikeThread({ threadId, authorId, likes }: Props) {
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const pathname = usePathname();
 
-  const toggleThreadLike = async () => {
-    if (likes.includes(authorId)) {
+  const handleThreadDislike = async () => {
+    try {
+      setIsLoading(true);
+      setIsLiked(false);
       await removeLikeFromThread({
         threadId,
         userId: authorId,
         path: pathname,
       });
-    } else {
+    } catch (error) {
+      setIsLiked(true);
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleThreadLike = async () => {
+    try {
+      setIsLoading(true);
+      setIsLiked(true);
       await addLikeToThread({
         threadId,
         userId: authorId,
         path: pathname,
       });
+    } catch (error) {
+      setIsLiked(false);
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const toggleThreadLike = async () => {
+    if (likes.includes(authorId)) {
+      handleThreadDislike();
+    } else {
+      handleThreadLike();
     }
   };
 
   return (
-    <div className="flex items-center gap-1">
+    <button
+      onClick={toggleThreadLike}
+      disabled={isLoading}
+      className="flex items-center gap-1"
+    >
       <Image
         src={
-          likes.includes(authorId)
+          isLiked || likes.includes(authorId)
             ? "/assets/heart-filled.svg"
             : "/assets/heart-gray.svg"
         }
         alt="Heart"
         width={24}
         height={24}
-        onClick={toggleThreadLike}
         className="cursor-pointer object-contain"
       />
 
       {likes.length > 0 && (
-        <p className="text-subtle-medium text-gray-1">{likes.length}</p>
+        <p className="text-subtle-medium text-gray-1">
+          {isLoading
+            ? isLiked
+              ? likes.length + 1
+              : likes.length - 1
+            : likes.length}
+        </p>
       )}
-    </div>
+    </button>
   );
 }
 
