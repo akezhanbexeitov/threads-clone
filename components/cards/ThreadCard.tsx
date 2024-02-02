@@ -30,12 +30,16 @@ interface IProps {
   } | null;
   createdAt: string;
   comments: {
+    _id: ObjectId;
+    text: string;
     author: {
       _id: string;
       name: string;
-      parentId: string;
       image: string;
     };
+    likes: ObjectId[];
+    parentId: ObjectId;
+    childrem: ObjectId[];
   }[];
   isComment?: boolean;
   likes: ObjectId[];
@@ -187,22 +191,25 @@ const ThreadCard: FC<IProps> = ({
       {/* Show comment logos */}
       {!isComment && comments.length > 0 && (
         <div className="ml-1 mt-3 flex items-center gap-2">
-          {comments.slice(0, 2).map((comment, index) => (
-            <div
-              key={comment.author._id}
-              className={`${
-                index !== 0 && "-ml-5"
-              } h-6 w-6 overflow-hidden rounded-full`}
-            >
-              <Image
-                src={comment.author.image}
-                alt={`user_${comment.author._id}`}
-                width={24}
-                height={24}
-                className="h-full w-full object-cover"
-              />
-            </div>
-          ))}
+          {comments.slice(0, 2).map((comment, index) => {
+            console.log("COMMENT: ", comment);
+            return (
+              <div
+                key={String(comment._id)}
+                className={`${
+                  index !== 0 && "-ml-5"
+                } h-6 w-6 overflow-hidden rounded-full`}
+              >
+                <Image
+                  src={comment.author.image}
+                  alt={`user_${comment.author._id}`}
+                  width={24}
+                  height={24}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            );
+          })}
 
           <Link href={`/thread/${id}`}>
             <p className="mt-1 text-subtle-medium text-gray-1">
